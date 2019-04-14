@@ -1,4 +1,4 @@
-import constants as const
+import src.constants as const
 import tkinter as tk
 
 

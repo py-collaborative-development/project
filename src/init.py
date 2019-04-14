@@ -1,6 +1,6 @@
-import gui
-import constants as const
-import handlers
+import src.gui as gui
+import src.constants as const
+import src.handlers as handlers
 import random
 
 

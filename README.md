@@ -6,7 +6,7 @@
 Игроку дается поле размером N*N, на которой находится K бомб, который игрок должен отыскать.
 
 ## Схема:
-![minesweeper design](minesweeper.jpg)
+![minesweeper design](img/minesweeper.jpg)
 
 ## Разработчики:
 * [Имеев М.А.](https://github.com/ImeevMA), группа 316
