@@ -1,10 +1,12 @@
 def bomb():
-	print("YOU ARE DEAD!!!")
+    print("YOU ARE DEAD!!!")
+
 
 def none():
-	print("Nothing")
+    print("Nothing")
+
 
 def number(num):
-	def print_number():
-		print("Number ", num)
-	return print_number
+    def print_number():
+        print("Number ", num)
+    return print_number
