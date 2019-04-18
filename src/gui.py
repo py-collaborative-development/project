@@ -12,25 +12,43 @@ class FieldFrame(tk.Frame):
         self.cols = cols
         self.rows = rows
 
-    def set_buttons(self, handlers):
+    def set_buttons(self, values):
         self.buttons = []
-        for i in range(self.cols):
-            for j in range(self.rows):
-                index = j * self.cols + i
+        self.values = values
+        for j in range(self.rows):
+            for i in range(self.cols):
+                def button_func(col, row, **kwargs):
+                    def result(**kwargs):
+                        self.button_pressed(col, row, **kwargs)
+                    return result
                 btnframe = tk.Frame(self,
                                     width=const.BTN_SIZE_RATIO,
                                     height=const.BTN_SIZE_RATIO)
                 btnframe.grid_propagate(False)
                 btnframe.propagate(False)
                 btnframe.grid(row=j, column=i, sticky=tk.NSEW)
-                btn = tk.Button(btnframe, command=handlers[index])
+                btn = tk.Button(btnframe, command=button_func(i, j))
                 btn.pack(expand=True, fill=tk.BOTH)
                 self.buttons.append(btn)
 
     def button_pressed(self, col, row, **kwargs):
-        print(col, row)
-        self.buttons[col][row]['background'] = 'PeachPuff'
+        self.open_button(col, row)
 
+    def open_button(self, col, row):
+        index = row * self.cols + col
+        button = self.buttons[index]
+        if str(button['state']) == 'disabled':
+            return
+        value = self.values[index]
+        button.config(state=tk.DISABLED, fg='red')
+        if value > 0:
+            button.config(text=value)
+        elif value < 0:
+            button.config(text=u"\u2620")
+        else:
+            for i in range(max(0, col - 1), min(self.cols, col + 2)):
+                for j in range(max(0, row - 1), min(self.rows, row + 2)):
+                    self.open_button(i, j)
 
 class TopFrame(tk.Frame):
     def __init__(self, root, cols=const.WIDTH):
