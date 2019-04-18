@@ -18,7 +18,8 @@ class FieldFrame(tk.Frame):
             for j in range(self.rows):
                 index = j * self.cols + i
                 btnframe = tk.Frame(self,
-                                    width=const.BTN_SIZE_RATIO, height=const.BTN_SIZE_RATIO)
+                                    width=const.BTN_SIZE_RATIO,
+                                    height=const.BTN_SIZE_RATIO)
                 btnframe.grid_propagate(False)
                 btnframe.propagate(False)
                 btnframe.grid(row=j, column=i, sticky=tk.NSEW)
@@ -37,7 +38,8 @@ class TopFrame(tk.Frame):
         self.grid(row=0, column=0)
         self.timer = tk.Label(self, text="0")
         self.timer.grid(row=0, column=0, sticky=tk.W)
-        self.restart_button = tk.Button(self, text="Restart game", command=self.restart_pressed)
+        self.restart_button = tk.Button(self, text="Restart game",
+                                        command=self.restart_pressed)
         self.restart_button.grid(row=0, column=1)
         self.timer = tk.Label(self, text=const.BOMBS)
         self.timer.grid(row=0, column=2, sticky=tk.E)
