@@ -1,9 +1,10 @@
 import src.constants as const
-from src.handlers import Timer
+from src.handlers import Timer, Checker
 import tkinter as tk
 
-
-t = Timer()
+import time
+timer = Timer()
+flag_checker = Checker(const.BOMBS)
 
 class Cell():
     TEXT_BOMB = u"\u2739"
@@ -48,11 +49,13 @@ class Cell():
             self.is_marked = False
             self.button.config(state=tk.NORMAL)
             self.button.config(text=self.__class__.TEXT_NONE)
+            flag_checker.count += 1
         else:
             self.is_disabled = True
             self.is_marked = True
             self.button.config(state=tk.DISABLED, disabledforeground="#FF0000")
             self.button.config(text=self.__class__.TEXT_MARK)
+            flag_checker.count -= 1
 
 
 class FieldFrame(tk.Frame):
@@ -78,7 +81,8 @@ class FieldFrame(tk.Frame):
                     index = j * self.cols + i
                     self.cells[index].open()
             print("You have LOST!!!")
-            t.stop_clock()
+            timer.stop_clock()
+            flag_checker.stop_clock(win=False)
             return
 
         def count_func():
@@ -91,7 +95,8 @@ class FieldFrame(tk.Frame):
                         self.cells[index].mark()
                         self.cells[index].is_marked = False
                 print("You have WON!!!")
-                t.stop_clock()
+                timer.stop_clock()
+                flag_checker.stop_clock(win=True)
 
         def empty_cell_func(col, row):
             def result():
@@ -119,14 +124,14 @@ class TopFrame(tk.Frame):
         super(TopFrame, self).__init__(root, width=const.BTN_SIZE_RATIO * cols)
         self.grid(row=0, column=0)
 
-        t.label = tk.Label(self, text= "00:00")
-        t.label.grid(row=0, column=0, sticky=tk.W)
+        timer.label = tk.Label(self, text= "00:00")
+        timer.label.grid(row=0, column=0, sticky=tk.W)
 
         self.restart_button = tk.Button(self, text="Restart game", command=self.restart_pressed)
         self.restart_button.grid(row=0, column=1)
 
-        self.flags = tk.Label(self, text=const.BOMBS)
-        self.flags.grid(row=0, column=2, sticky=tk.E)
+        flag_checker.label = tk.Label(self, text= '')
+        flag_checker.label.grid(row=0, column=2, sticky=tk.W)
 
     def restart_pressed(self):
         print("To be done")
