@@ -1,6 +1,9 @@
 import src.constants as const
+from src.handlers import Timer
 import tkinter as tk
 
+
+t = Timer()
 
 class Cell():
     TEXT_BOMB = u"\u2739"
@@ -75,6 +78,7 @@ class FieldFrame(tk.Frame):
                     index = j * self.cols + i
                     self.cells[index].open()
             print("You have LOST!!!")
+            t.stop_clock()
             return
 
         def count_func():
@@ -87,6 +91,7 @@ class FieldFrame(tk.Frame):
                         self.cells[index].mark()
                         self.cells[index].is_marked = False
                 print("You have WON!!!")
+                t.stop_clock()
 
         def empty_cell_func(col, row):
             def result():
@@ -113,13 +118,15 @@ class TopFrame(tk.Frame):
     def __init__(self, root, cols=const.WIDTH):
         super(TopFrame, self).__init__(root, width=const.BTN_SIZE_RATIO * cols)
         self.grid(row=0, column=0)
-        self.timer = tk.Label(self, text="0")
-        self.timer.grid(row=0, column=0, sticky=tk.W)
-        self.restart_button = tk.Button(self, text="Restart game",
-                                        command=self.restart_pressed)
+
+        t.label = tk.Label(self, text= "00:00")
+        t.label.grid(row=0, column=0, sticky=tk.W)
+
+        self.restart_button = tk.Button(self, text="Restart game", command=self.restart_pressed)
         self.restart_button.grid(row=0, column=1)
-        self.timer = tk.Label(self, text=const.BOMBS)
-        self.timer.grid(row=0, column=2, sticky=tk.E)
+
+        self.flags = tk.Label(self, text=const.BOMBS)
+        self.flags.grid(row=0, column=2, sticky=tk.E)
 
     def restart_pressed(self):
         print("To be done")
