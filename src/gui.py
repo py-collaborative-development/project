@@ -2,12 +2,13 @@ import src.constants as const
 from src.handlers import Timer, Checker
 import tkinter as tk
 
-import time
+
 timer = Timer()
 flag_checker = Checker(const.BOMBS)
 
+
 class Cell():
-    TEXT_BOMB = u"\u2739"
+    TEXT_BOMB = u"\u2738"
     TEXT_MARK = u"\u2690"
     TEXT_NONE = ""
 
@@ -32,13 +33,15 @@ class Cell():
         self.button.config(state=tk.DISABLED, bg="#BBBBBB",
                            disabledforeground="#0000FF")
         if self.is_bomb:
-            self.button.config(text=self.__class__.TEXT_BOMB)
+            self.button.config(text=self.__class__.TEXT_BOMB,
+                               disabledforeground='black')
             self.loss_func()
             return
         if self.is_empty:
             self.empty_cell_func()
         else:
-            self.button.config(text=self.value)
+            self.button.config(text=self.value,
+                               disabledforeground=const.COLORS[self.value])
         self.count_func()
 
     def mark(self, event=None):
@@ -123,14 +126,12 @@ class TopFrame(tk.Frame):
     def __init__(self, root, cols=const.WIDTH):
         super(TopFrame, self).__init__(root, width=const.BTN_SIZE_RATIO * cols)
         self.grid(row=0, column=0)
-
-        timer.label = tk.Label(self, text= "00:00")
+        timer.label = tk.Label(self, text="00:00")
         timer.label.grid(row=0, column=0, sticky=tk.W)
-
-        self.restart_button = tk.Button(self, text="Restart game", command=self.restart_pressed)
+        self.restart_button = tk.Button(self, text="Restart game",
+                                        command=self.restart_pressed)
         self.restart_button.grid(row=0, column=1)
-
-        flag_checker.label = tk.Label(self, text= '')
+        flag_checker.label = tk.Label(self, text='')
         flag_checker.label.grid(row=0, column=2, sticky=tk.W)
 
     def restart_pressed(self):
@@ -138,4 +139,5 @@ class TopFrame(tk.Frame):
 
 
 root = tk.Tk()
+root.title('Minesweeper')
 root.resizable(False, False)
