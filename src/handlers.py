@@ -43,6 +43,9 @@ class Timer():
 
 
 class Checker():
+    HAPPY = u"\u263a"
+    SAD = u"\u2639"
+
     def __init__(self, count):
         self.label = CanBeConfigured()
         self.count = count
@@ -57,9 +60,9 @@ class Checker():
 
     def stop_clock(self, win):
         if win:
-            self.label.config(text='YOU WIN!', fg='green')
+            self.label.config(text=self.HAPPY+'YOU WIN!', fg='green')
         else:
-            self.label.config(text='YOU LOSE!', fg='red')
+            self.label.config(text=self.SAD+'YOU LOSE!', fg='red')
         self.stopped.set()
 
 

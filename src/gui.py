@@ -139,4 +139,5 @@ class TopFrame(tk.Frame):
 
 
 root = tk.Tk()
+root.title('Minesweeper')
 root.resizable(False, False)
