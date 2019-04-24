@@ -13,3 +13,10 @@ COLORS = {
     7: 'pink',
     8: 'black'
 }
+
+TEXTS = {
+    'settings.mines': 'Количество мин',
+    'settings.width': 'Ширина',
+    'settings.height': 'Высота',
+    'settings.caption': 'Настройки',
+}
