@@ -148,21 +148,24 @@ def show_settings_window(*_):
     label_mines = tk.Label(sw, text=const.TEXTS['settings.mines'])
     label_mines.grid(row=0, column=0)
     spinbox_mines = tk.Spinbox(
-        sw, values=list(range(const.WIDTH * const.HEIGHT)),
+        sw, from_=1, to=const.WIDTH * const.HEIGHT,
+        textvariable=tk.IntVar(sw, const.BOMBS),
     )
     spinbox_mines.grid(row=0, column=1)
 
     label_width = tk.Label(sw, text=const.TEXTS['settings.width'])
     label_width.grid(row=1, column=0)
     spinbox_width = tk.Spinbox(
-        sw, values=list(range(99)),
+        sw, from_=1, to=99,
+        textvariable=tk.IntVar(sw, const.WIDTH),
     )
     spinbox_width.grid(row=1, column=1)
 
     label_height = tk.Label(sw, text=const.TEXTS['settings.height'])
     label_height.grid(row=2, column=0)
     spinbox_height = tk.Spinbox(
-        sw, values=list(range(99)),
+        sw, from_=1, to=99,
+        textvariable=tk.IntVar(sw, const.HEIGHT),
     )
     spinbox_height.grid(row=2, column=1)
 
