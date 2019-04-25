@@ -3,10 +3,6 @@ from src.handlers import Timer
 import tkinter as tk
 import random
 
-timer = Timer()
-# flag_checker = Checker(const.BOMBS)
-
-
 class Cell():
     TEXT_BOMB = u"\u2738"
     TEXT_MARK = u"\u2690"
@@ -51,13 +47,13 @@ class Cell():
             self.is_marked = False
             self.button.config(state=tk.NORMAL)
             self.button.config(text=self.__class__.TEXT_NONE)
-            # flag_checker.count += 1
+            flag_counter.set(flag_counter.get() + 1)
         else:
             self.is_disabled = True
             self.is_marked = True
             self.button.config(state=tk.DISABLED, disabledforeground="#FF0000")
             self.button.config(text=self.__class__.TEXT_MARK)
-            # flag_checker.count -= 1
+            flag_counter.set(flag_counter.get() - 1)
 
     def reset(self, value):
         self.value = value
@@ -70,6 +66,9 @@ class Cell():
 
 
 class FieldFrame(tk.Frame):
+    TEXT_WIN = u"\u263a"+'YOU WIN!'
+    TEXT_LOSE = u"\u2639"+'YOU LOSE!'
+
     def __init__(self, root, cols=const.WIDTH, rows=const.HEIGHT,
                  bomb_number=const.BOMBS):
         super(FieldFrame, self).__init__(root,
@@ -85,6 +84,7 @@ class FieldFrame(tk.Frame):
         self.undefined_cells = cols * rows - bomb_number
         self.generate_field()
         self.set_buttons()
+        flag_counter.set(self.bomb_number)
 
     def set_buttons(self):
         def loss_func():
@@ -96,7 +96,8 @@ class FieldFrame(tk.Frame):
                     index = j * self.cols + i
                     self.cells[index].open()
             timer.stop_clock()
-            # flag_checker.stop_clock(win=False)
+            label_flag_counter["foreground"] = "red"
+            flag_counter_text.set(self.TEXT_LOSE)
             return
 
         def count_func():
@@ -109,7 +110,8 @@ class FieldFrame(tk.Frame):
                         self.cells[index].mark()
                         self.cells[index].is_marked = False
                 timer.stop_clock()
-                # flag_checker.stop_clock(win=True)
+                label_flag_counter["foreground"] = "green"
+                flag_counter_text.set(self.TEXT_WIN)
 
         def empty_cell_func(col, row):
             def result():
@@ -151,6 +153,8 @@ class FieldFrame(tk.Frame):
         self.undefined_cells = self.cols * self.rows - self.bomb_number
         self.generate_field()
         timer.reset_clock()
+        flag_counter.set(self.bomb_number)
+        label_flag_counter["foreground"] = "black"
         for i in range(self.cols):
             for j in range(self.rows):
                 index = j * self.cols + i
@@ -161,13 +165,14 @@ class TopFrame(tk.Frame):
     def __init__(self, root, cols=const.WIDTH, field_restart=None):
         super(TopFrame, self).__init__(root, width=const.BTN_SIZE_RATIO * cols)
         self.grid(row=0, column=0)
-        timer.label = tk.Label(self, text="00:00")
-        timer.label.grid(row=0, column=0, sticky=tk.W)
+        timer_label = tk.Label(self, textvariable=timer_text)
+        timer_label.grid(row=0, column=0, sticky=tk.W)
         self.restart_button = tk.Button(self, text="Restart game",
                                         command=field_restart)
         self.restart_button.grid(row=0, column=1)
-        # flag_checker.label = tk.Label(self, text='')
-        # flag_checker.label.grid(row=0, column=2, sticky=tk.W)
+        global label_flag_counter
+        label_flag_counter = tk.Label(self, textvariable=flag_counter_text)
+        label_flag_counter.grid(row=0, column=2, sticky=tk.W)
 
 
 def show_settings_window(*_):
@@ -222,3 +227,13 @@ root.title('Minesweeper')
 root.resizable(False, False)
 root.bind("<o>", show_settings_window)
 root.bind("<O>", show_settings_window)
+
+def counter_text(*args):
+    flag_counter_text.set("Bombs: {}".format(flag_counter.get()))
+flag_counter = tk.IntVar()
+flag_counter.trace("w", counter_text)
+flag_counter_text = tk.StringVar(root)
+flag_counter_text.set("Bombs: {}".format(flag_counter.get()))
+
+timer_text = tk.StringVar(root)
+timer = Timer(timer_text)

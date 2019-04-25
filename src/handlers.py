@@ -2,14 +2,6 @@ import datetime
 from threading import Thread, Event
 
 
-class CanBeConfigured():
-    def __init__(self):
-        pass
-
-    def config(self, text, *args, **kwargs):
-        return
-
-
 class MyThread(Thread):
     def __init__(self, root, seconds_to_wait):
         Thread.__init__(self)
@@ -25,8 +17,8 @@ class MyThread(Thread):
 
 
 class Timer():
-    def __init__(self):
-        self.label = CanBeConfigured()
+    def __init__(self, text_variable):
+        self.text_variable = text_variable
         self.reset_clock()
         self.update_clock()
         self.thread = MyThread(self, 1)
@@ -37,7 +29,7 @@ class Timer():
             return
         delta = datetime.datetime.now() - self.begin
         text = '{:0>2}:{:0>2}'.format(delta.seconds // 60, delta.seconds % 60)
-        self.label.config(text=text)
+        self.text_variable.set(text)
 
     def stop_clock(self):
         self.is_stopped = True
@@ -46,27 +38,3 @@ class Timer():
         self.begin = datetime.datetime.now()
         self.is_stopped = False
         self.update_clock()
-
-
-class Checker():
-    HAPPY = u"\u263a"
-    SAD = u"\u2639"
-
-    def __init__(self, count):
-        self.label = CanBeConfigured()
-        self.count = count
-        self.is_stopped = False
-
-        self.update_clock()
-        self.thread = MyThread(self, 0.001)
-        self.thread.start()
-
-    def update_clock(self):
-        self.label.config(text='Bombs: {}'.format(self.count))
-
-    def stop_clock(self, win):
-        if win:
-            self.label.config(text=self.HAPPY+'YOU WIN!', fg='green')
-        else:
-            self.label.config(text=self.SAD+'YOU LOSE!', fg='red')
-        self.is_stopped = True
