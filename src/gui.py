@@ -2,7 +2,6 @@ import src.constants as const
 from src.handlers import Timer, Checker
 import tkinter as tk
 
-
 timer = Timer()
 flag_checker = Checker(const.BOMBS)
 
@@ -107,6 +106,7 @@ class FieldFrame(tk.Frame):
                     for j in range(max(0, row - 1), min(self.rows, row + 2)):
                         index = j * self.cols + i
                         self.cells[index].open()
+
             return result
 
         self.values = values
@@ -138,6 +138,55 @@ class TopFrame(tk.Frame):
         print("To be done")
 
 
+def show_settings_window(*_):
+    sw = tk.Toplevel(root)
+    sw.focus_set()
+    sw.grab_set()
+    sw.resizable(False, False)
+    sw.title(const.TEXTS['settings.caption'])
+
+    label_mines = tk.Label(sw, text=const.TEXTS['settings.mines'])
+    label_mines.grid(row=0, column=0)
+
+    spinbox_mines = tk.Spinbox(
+        sw, from_=1, to=const.WIDTH * const.HEIGHT,
+        textvariable=tk.IntVar(sw, const.BOMBS),
+    )
+
+    def set_mines():
+        const.BOMBS = spinbox_mines.get()
+
+    spinbox_mines.grid(row=0, column=1)
+    spinbox_mines.config(command=set_mines)
+
+    label_width = tk.Label(sw, text=const.TEXTS['settings.width'])
+    label_width.grid(row=1, column=0)
+    spinbox_width = tk.Spinbox(
+        sw, from_=1, to=99,
+        textvariable=tk.IntVar(sw, const.WIDTH),
+    )
+
+    def set_width():
+        const.BOMBS = spinbox_width.get()
+
+    spinbox_width.grid(row=1, column=1)
+    spinbox_width.config(command=set_width)
+
+    label_height = tk.Label(sw, text=const.TEXTS['settings.height'])
+    label_height.grid(row=2, column=0)
+    spinbox_height = tk.Spinbox(
+        sw, from_=1, to=99,
+        textvariable=tk.IntVar(sw, const.HEIGHT),
+    )
+
+    def set_height():
+        const.BOMBS = spinbox_height.get()
+    spinbox_height.grid(row=2, column=1)
+    spinbox_width.config(command=set_height)
+
+
 root = tk.Tk()
 root.title('Minesweeper')
 root.resizable(False, False)
+root.bind("<o>", show_settings_window)
+root.bind("<O>", show_settings_window)
