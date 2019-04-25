@@ -11,35 +11,41 @@ class CanBeConfigured():
 
 
 class MyThread(Thread):
-    def __init__(self, event, root, seconds_to_wait):
+    def __init__(self, root, seconds_to_wait):
         Thread.__init__(self)
-        self.stopped = event
+        self.daemon = True
         self.root = root
+        self.stopped = Event()
         self.seconds_to_wait = seconds_to_wait
 
     def run(self):
         while not self.stopped.wait(self.seconds_to_wait):
             self.root.update_clock()
+        self.join()
 
 
 class Timer():
     def __init__(self):
         self.label = CanBeConfigured()
-        self.begin = datetime.datetime.now()
-        self.delta = 0
-
+        self.reset_clock()
         self.update_clock()
-        self.stopped = Event()
-        self.thread = MyThread(self.stopped, self, 1)
+        self.thread = MyThread(self, 1)
         self.thread.start()
 
     def update_clock(self):
-        self.delta = datetime.datetime.now() - self.begin
-        self.label.config(text='{:0>2}:{:0>2}'.format(
-            self.delta.seconds // 60, self.delta.seconds % 60))
+        if self.is_stopped:
+            return
+        delta = datetime.datetime.now() - self.begin
+        text = '{:0>2}:{:0>2}'.format(delta.seconds // 60, delta.seconds % 60)
+        self.label.config(text=text)
 
     def stop_clock(self):
-        self.stopped.set()
+        self.is_stopped = True
+
+    def reset_clock(self):
+        self.begin = datetime.datetime.now()
+        self.is_stopped = False
+        self.update_clock()
 
 
 class Checker():
@@ -49,10 +55,10 @@ class Checker():
     def __init__(self, count):
         self.label = CanBeConfigured()
         self.count = count
+        self.is_stopped = False
 
         self.update_clock()
-        self.stopped = Event()
-        self.thread = MyThread(self.stopped, self, 0.001)
+        self.thread = MyThread(self, 0.001)
         self.thread.start()
 
     def update_clock(self):
@@ -63,18 +69,4 @@ class Checker():
             self.label.config(text=self.HAPPY+'YOU WIN!', fg='green')
         else:
             self.label.config(text=self.SAD+'YOU LOSE!', fg='red')
-        self.stopped.set()
-
-
-def bomb():
-    print("YOU ARE DEAD!!!")
-
-
-def none():
-    print("Nothing")
-
-
-def number(num):
-    def print_number():
-        print("Number ", num)
-    return print_number
+        self.is_stopped = True
