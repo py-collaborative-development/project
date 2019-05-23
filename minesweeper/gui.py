@@ -1,5 +1,5 @@
-import src.constants as const
-from src.handlers import Timer, generate_field
+import minesweeper.constants as const
+from minesweeper.handlers import Timer, generate_field
 import tkinter as tk
 import gettext
 import sys
