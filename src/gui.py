@@ -1,7 +1,6 @@
 import src.constants as const
-from src.handlers import Timer
+from src.handlers import Timer, generate_field
 import tkinter as tk
-import random
 import gettext
 import sys
 import os
@@ -89,7 +88,7 @@ class FieldFrame(tk.Frame):
         self.bomb_number = bomb_number
         self.is_loser = False
         self.undefined_cells = cols * rows - bomb_number
-        self.generate_field()
+        self.field = generate_field(cols, rows, bomb_number)
         self.set_buttons()
         flag_counter.set(self.bomb_number)
 
@@ -140,25 +139,10 @@ class FieldFrame(tk.Frame):
                             loss_func, count_func, empty_cell_func(i, j))
                 self.cells.append(cell)
 
-    def generate_field(self):
-        field = [0 for x in range(self.cols * self.rows)]
-        bomb_indexes = random.sample(range(self.cols * self.rows),
-                                     self.bomb_number)
-        for i in range(self.bomb_number):
-            x = bomb_indexes[i] % self.rows
-            y = bomb_indexes[i] // self.rows
-            for j in range(max(0, x - 1), min(x + 2, self.rows)):
-                for k in range(max(0, y - 1), min(y + 2, self.cols)):
-                    index = k * self.rows + j
-                    field[index] = field[index] + 1
-        for i in range(self.bomb_number):
-            field[bomb_indexes[i]] = -1
-        self.field = field
-
     def restart(self):
         self.is_loser = False
         self.undefined_cells = self.cols * self.rows - self.bomb_number
-        self.generate_field()
+        self.field = generate_field(self.cols, self.rows, self.bomb_number)
         timer.reset_clock()
         flag_counter.set(self.bomb_number)
         label_flag_counter['foreground'] = 'black'
